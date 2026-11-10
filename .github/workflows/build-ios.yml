@@ -14,7 +14,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
 
       - name: Install Dependencies
@@ -26,19 +26,23 @@ jobs:
       - name: Capacitor Sync
         run: npx cap sync ios
 
-      - name: Build iOS Workspace (Simulator / Unsigned)
+      - name: Build iOS Workspace (Unsigned)
         run: |
           xcodebuild -workspace ios/App/App.xcworkspace \
                      -scheme App \
                      -destination 'generic/platform=iOS' \
                      -configuration Release \
                      CODE_SIGNING_ALLOWED=NO \
+                     CODE_SIGNING_REQUIRED=NO \
+                     CODE_SIGNING_IDENTITY="" \
                      build
 
-      - name: Package App as Payload / Zip
+      - name: Package App as Payload / IPA
         run: |
           mkdir -p build-output/Payload
-          cp -r $(find ~/Library/Developer/Xcode/DerivedData -name "App.app" | head -n 1) build-output/Payload/
+          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "App.app" -type d | head -n 1)
+          echo "Found built app at: $APP_PATH"
+          cp -r "$APP_PATH" build-output/Payload/
           cd build-output
           zip -r PersonalLifeHub.ipa Payload
           cd ..
