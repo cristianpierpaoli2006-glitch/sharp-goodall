@@ -33,12 +33,13 @@ jobs:
       - name: Capacitor Sync
         run: npx cap sync ios
 
-      - name: Build iOS Workspace (Unsigned)
+      - name: Build iOS Project (Unsigned)
         run: |
-          xcodebuild -workspace ios/App/App.xcworkspace \
+          xcodebuild -project ios/App/App.xcodeproj \
                      -scheme App \
                      -destination 'generic/platform=iOS' \
                      -configuration Release \
+                     -derivedDataPath build-output/DerivedData \
                      CODE_SIGNING_ALLOWED=NO \
                      CODE_SIGNING_REQUIRED=NO \
                      CODE_SIGNING_IDENTITY="" \
@@ -47,7 +48,7 @@ jobs:
       - name: Package App as Payload / IPA
         run: |
           mkdir -p build-output/Payload
-          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "App.app" -type d | head -n 1)
+          APP_PATH=$(find build-output/DerivedData -name "App.app" -type d | head -n 1)
           echo "Found built app at: $APP_PATH"
           cp -r "$APP_PATH" build-output/Payload/
           cd build-output
