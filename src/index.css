@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --sat: env(safe-area-inset-top);
+    --sar: env(safe-area-inset-right);
+    --sab: env(safe-area-inset-bottom);
+    --sal: env(safe-area-inset-left);
+    /* Fa sì che input nativi (date, time, select, scrollbar) usino lo stile scuro */
+    color-scheme: dark;
+  }
+
+  /* Prevent overscroll bounce / pinch zoom issues on mobile Safari */
+  html, body {
+    @apply bg-surface-0 text-slate-100 antialiased selection:bg-brand-500 selection:text-white;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    overscroll-behavior-y: none;
+  }
+
+  /* Gli input devono restare selezionabili / con menu copia-incolla su iOS */
+  input, textarea {
+    -webkit-touch-callout: default;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  /* Su iOS Safari un input con font < 16px provoca lo zoom automatico al tocco */
+  @supports (-webkit-touch-callout: none) {
+    input, textarea, select {
+      font-size: 16px !important;
+    }
+  }
+
+  /* Placeholder multilinea leggibile */
+  textarea::placeholder {
+    white-space: pre-line;
+  }
+}
+
+@layer utilities {
+  /* Safe area iPhone (notch / home indicator) */
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Custom scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
